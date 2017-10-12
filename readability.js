@@ -821,36 +821,31 @@ var readability = {
                 dbg("Appending node: " + siblingNode);
 
                 var nodeToAppend = '';
-                nodeToAppend = document.createElement("DIV");
-                nodeToAppend.id = siblingNode.id;
-                nodeToAppend.innerHTML = siblingNode.innerHTML;
+                if(siblingNode.nodeName !== "DIV" && siblingNode.nodeName !== "P") {
+                    /* We have a node that isn't a common block level element, like a form or td tag. Turn it into a div so it doesn't get filtered out later by accident. */
 
-                // if(siblingNode.nodeName !== "DIV" && siblingNode.nodeName !== "P") {
-                //     /* We have a node that isn't a common block level element, like a form or td tag. Turn it into a div so it doesn't get filtered out later by accident. */
-
-                //     dbg("Altering siblingNode of " + siblingNode.nodeName + ' to div.');
-                //     nodeToAppend = document.createElement("DIV");
-                //     try {
-                //         nodeToAppend.id = siblingNode.id;
-                //         nodeToAppend.innerHTML = siblingNode.innerHTML;
-                //     }
-                //     catch(er) {
-                //         dbg("Could not alter siblingNode to div, probably an IE restriction, reverting back to original.");
-                //         nodeToAppend = siblingNode;
-                //         s-=1;
-                //         sl-=1;
-                //     }
-                // } else {
-                //     nodeToAppend = siblingNode;
-                //     s-=1;
-                //     sl-=1;
-                // }
+                    dbg("Altering siblingNode of " + siblingNode.nodeName + ' to div.');
+                    nodeToAppend = document.createElement("DIV");
+                    try {
+                        nodeToAppend.id = siblingNode.id;
+                        nodeToAppend.innerHTML = siblingNode.innerHTML;
+                    }
+                    catch(er) {
+                        dbg("Could not alter siblingNode to div, probably an IE restriction, reverting back to original.");
+                        nodeToAppend = siblingNode;
+                        s-=1;
+                        sl-=1;
+                    }
+                } else {
+                    nodeToAppend = siblingNode;
+                    s-=1;
+                    sl-=1;
+                }
 
                 /* To ensure a node does not interfere with readability styles, remove its classnames */
-                // nodeToAppend.className = "";
+                nodeToAppend.className = "";
 
                 articleContent.appendChild(nodeToAppend);
-                return articleContent;
             }
         }
 
